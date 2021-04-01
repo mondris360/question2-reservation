@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,6 @@ public class ReservationServiceImpl  implements ReservationService {
         final List<Reservation> allReservations = reservationRepository.findAll();
 
         final List<ReservationResDto> reservations = allReservations.stream()
-
                 .map(entity -> modelMapper.map(entity, ReservationResDto.class))
                 .collect(Collectors.toList());
 
@@ -59,6 +59,11 @@ public class ReservationServiceImpl  implements ReservationService {
 
     @Override
     public ResponseEntity<ApiResponse> createReservation(ReservationReqDto request) {
+
+        if (request.getDate() == null){
+
+            request.setDate(new Timestamp(System.currentTimeMillis()));
+        }
 
         final Reservation reservation = modelMapper.map(request, Reservation.class);
 
